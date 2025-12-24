@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { Plus, Minus, AlertTriangle, Package, Search } from 'lucide-react';
+import { Plus, Minus, AlertTriangle, Package, Search, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useData } from '../context/DataContext';
 import './Inventory.css';
 
 function Inventory() {
-    const { menuItems, updateStock, getStats } = useData();
+    const { menuItems, updateStock, getStats, loadMenuItems, loading } = useData();
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [adjustingItem, setAdjustingItem] = useState(null);
     const [adjustAmount, setAdjustAmount] = useState('');
+    const [saving, setSaving] = useState(false);
 
     const stats = getStats();
 
@@ -28,21 +29,40 @@ function Inventory() {
         return matchesSearch && matchesStatus;
     });
 
-    const handleQuickAdjust = (item, amount) => {
-        updateStock(item.id, amount);
-        toast.success(`Stock ${amount > 0 ? 'added' : 'removed'}: ${item.name}`);
+    const handleQuickAdjust = async (item, amount) => {
+        try {
+            await updateStock(item.itemId, amount);
+            toast.success(`Stock ${amount > 0 ? 'added' : 'removed'}: ${item.name}`);
+        } catch (error) {
+            toast.error(error.message || 'Failed to update stock');
+        }
     };
 
-    const handleCustomAdjust = () => {
+    const handleCustomAdjust = async () => {
         if (!adjustingItem || !adjustAmount) return;
         const amount = parseInt(adjustAmount);
         if (isNaN(amount)) return;
 
-        updateStock(adjustingItem.id, amount);
-        toast.success(`Stock adjusted: ${adjustingItem.name}`);
-        setAdjustingItem(null);
-        setAdjustAmount('');
+        setSaving(true);
+        try {
+            await updateStock(adjustingItem.itemId, amount);
+            toast.success(`Stock adjusted: ${adjustingItem.name}`);
+            setAdjustingItem(null);
+            setAdjustAmount('');
+        } catch (error) {
+            toast.error(error.message || 'Failed to adjust stock');
+        } finally {
+            setSaving(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="inventory loading">
+                <div className="loading-spinner">Loading inventory...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="inventory">
@@ -51,6 +71,10 @@ function Inventory() {
                     <h1>📦 Inventory</h1>
                     <p>Track and manage stock levels</p>
                 </div>
+                <button className="btn btn-secondary" onClick={loadMenuItems}>
+                    <RefreshCw size={18} />
+                    Refresh
+                </button>
             </div>
 
             {/* Summary Cards */}
@@ -107,8 +131,9 @@ function Inventory() {
                 <table className="table">
                     <thead>
                         <tr>
+                            <th>Item ID</th>
                             <th>Item</th>
-                            <th>Category</th>
+                            <th>Type</th>
                             <th>Current Stock</th>
                             <th>Alert Level</th>
                             <th>Status</th>
@@ -119,9 +144,14 @@ function Inventory() {
                         {filteredItems.map(item => {
                             const status = getStockStatus(item);
                             return (
-                                <tr key={item.id} className={status === 'out' ? 'row-danger' : status === 'low' ? 'row-warning' : ''}>
+                                <tr key={item.itemId} className={status === 'out' ? 'row-danger' : status === 'low' ? 'row-warning' : ''}>
+                                    <td><code className="item-id">{item.itemId}</code></td>
                                     <td><strong>{item.name}</strong></td>
-                                    <td className="text-muted">{item.category}</td>
+                                    <td>
+                                        <span className={`type-tag ${item.isKitchen ? 'kitchen' : 'bar'}`}>
+                                            {item.isKitchen ? '🍳 Kitchen' : '🍺 Bar'}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span className={`stock-value ${status}`}>
                                             {item.stock}
@@ -181,8 +211,8 @@ function Inventory() {
                                 onChange={(e) => setAdjustAmount(e.target.value)}
                                 autoFocus
                             />
-                            <button className="btn btn-primary" onClick={handleCustomAdjust}>
-                                Apply
+                            <button className="btn btn-primary" onClick={handleCustomAdjust} disabled={saving}>
+                                {saving ? 'Saving...' : 'Apply'}
                             </button>
                         </div>
                         <p className="adjust-hint">

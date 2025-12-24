@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Bell, AlertTriangle, Package, Plus, Check, Clock, Trash2 } from 'lucide-react';
+import { Bell, AlertTriangle, Package, Plus, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useData } from '../context/DataContext';
 import './Notifications.css';
 
 function Notifications() {
-    const { menuItems, updateStock, getStats } = useData();
+    const { menuItems, updateStock, getStats, loadMenuItems, loading } = useData();
     const [filter, setFilter] = useState('all');
+    const [saving, setSaving] = useState({});
     const stats = getStats();
 
     const getStockStatus = (item) => {
@@ -19,12 +20,12 @@ function Notifications() {
     const notifications = menuItems
         .filter(item => getStockStatus(item) !== 'ok')
         .map(item => ({
-            id: item.id,
+            id: item.itemId,
             type: item.stock === 0 ? 'danger' : 'warning',
             title: item.stock === 0 ? 'Out of Stock' : 'Low Stock Alert',
             message: `${item.name} ${item.stock === 0 ? 'is out of stock' : `has only ${item.stock} units left`}`,
             item: item,
-            itemId: item.itemId || (item.isKitchen ? `KIT-${item.id}` : `BAR-${item.id}`),
+            itemId: item.itemId,
             category: item.isKitchen ? 'Kitchen' : 'Bar',
             timestamp: new Date(),
         }))
@@ -39,12 +40,27 @@ function Notifications() {
         return true;
     });
 
-    const handleQuickRestock = (item, amount) => {
-        updateStock(item.id, amount);
-        toast.success(`Added ${amount} units to ${item.name}`);
+    const handleQuickRestock = async (item, amount) => {
+        setSaving(prev => ({ ...prev, [item.itemId]: true }));
+        try {
+            await updateStock(item.itemId, amount);
+            toast.success(`Added ${amount} units to ${item.name}`);
+        } catch (error) {
+            toast.error(error.message || 'Failed to restock');
+        } finally {
+            setSaving(prev => ({ ...prev, [item.itemId]: false }));
+        }
     };
 
     const formatCurrency = (amount) => `₹${amount.toLocaleString('en-IN')}`;
+
+    if (loading) {
+        return (
+            <div className="notifications-page loading">
+                <div className="loading-spinner">Loading notifications...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="notifications-page">
@@ -56,6 +72,10 @@ function Notifications() {
                         <p>Stock alerts and system notifications</p>
                     </div>
                 </div>
+                <button className="btn btn-secondary" onClick={loadMenuItems}>
+                    <RefreshCw size={18} />
+                    Refresh
+                </button>
             </div>
 
             {/* Summary Cards */}
@@ -166,6 +186,7 @@ function Notifications() {
                                 <button
                                     className="btn btn-success"
                                     onClick={() => handleQuickRestock(notification.item, 10)}
+                                    disabled={saving[notification.item?.itemId]}
                                 >
                                     <Plus size={16} />
                                     +10
@@ -173,6 +194,7 @@ function Notifications() {
                                 <button
                                     className="btn btn-primary"
                                     onClick={() => handleQuickRestock(notification.item, 25)}
+                                    disabled={saving[notification.item?.itemId]}
                                 >
                                     <Plus size={16} />
                                     +25
@@ -180,6 +202,7 @@ function Notifications() {
                                 <button
                                     className="btn btn-secondary"
                                     onClick={() => handleQuickRestock(notification.item, 50)}
+                                    disabled={saving[notification.item?.itemId]}
                                 >
                                     <Plus size={16} />
                                     +50

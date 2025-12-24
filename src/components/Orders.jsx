@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Search, Clock, User, Phone, ChefHat } from 'lucide-react';
+import { Search, Clock, User, Phone, ChefHat, RefreshCw } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import './Orders.css';
 
 function Orders() {
-    const { orders } = useData();
+    const { orders, loadOrders, loading } = useData();
     const [searchQuery, setSearchQuery] = useState('');
     const [dateFilter, setDateFilter] = useState('all');
 
@@ -18,7 +18,7 @@ function Orders() {
         if (searchQuery) {
             filtered = filtered.filter(o =>
                 o.customer?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                o.orderId?.toLowerCase().includes(searchQuery.toLowerCase())
+                o.billId?.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -26,25 +26,32 @@ function Orders() {
         const now = new Date();
         if (dateFilter === 'today') {
             filtered = filtered.filter(o =>
-                new Date(o.timestamp).toDateString() === now.toDateString()
+                new Date(o.createdAt).toDateString() === now.toDateString()
             );
         } else if (dateFilter === 'week') {
-            const weekAgo = new Date(now.setDate(now.getDate() - 7));
-            filtered = filtered.filter(o => new Date(o.timestamp) >= weekAgo);
+            const weekAgo = new Date(now);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            filtered = filtered.filter(o => new Date(o.createdAt) >= weekAgo);
         } else if (dateFilter === 'month') {
-            const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
-            filtered = filtered.filter(o => new Date(o.timestamp) >= monthAgo);
+            const monthAgo = new Date(now);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            filtered = filtered.filter(o => new Date(o.createdAt) >= monthAgo);
         }
 
-        return filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     };
 
     const filteredOrders = filterOrders();
 
-    const totalRevenue = filteredOrders.reduce((sum, order) => {
-        const orderTotal = order.cart?.reduce((t, item) => t + (item.price * item.quantity), 0) || 0;
-        return sum + orderTotal;
-    }, 0);
+    const totalRevenue = filteredOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+    if (loading) {
+        return (
+            <div className="orders-page loading">
+                <div className="loading-spinner">Loading orders...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="orders-page">
@@ -62,6 +69,9 @@ function Orders() {
                         <span className="stat-label">Revenue</span>
                         <span className="stat-value">{formatCurrency(totalRevenue)}</span>
                     </div>
+                    <button className="btn btn-secondary" onClick={loadOrders}>
+                        <RefreshCw size={18} />
+                    </button>
                 </div>
             </div>
 
@@ -72,7 +82,7 @@ function Orders() {
                     <input
                         type="text"
                         className="input"
-                        placeholder="Search by customer or order ID..."
+                        placeholder="Search by customer or bill ID..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -99,20 +109,19 @@ function Orders() {
                     </div>
                 ) : (
                     filteredOrders.map(order => {
-                        const orderTotal = order.cart?.reduce((t, item) => t + (item.price * item.quantity), 0) || 0;
-                        const kitchenItems = order.cart?.filter(i => i.isKitchen) || [];
-                        const barItems = order.cart?.filter(i => !i.isKitchen) || [];
+                        const kitchenItems = order.kitchenItems || [];
+                        const barItems = order.barItems || [];
 
                         return (
-                            <div key={order.orderId} className="order-card">
+                            <div key={order.billId} className="order-card">
                                 <div className="order-header">
                                     <div className="order-id">
-                                        <span className="id-label">Order</span>
-                                        <span className="id-value">#{order.orderId?.slice(-8)}</span>
+                                        <span className="id-label">Bill</span>
+                                        <span className="id-value">#{order.billId?.slice(-8)}</span>
                                     </div>
                                     <div className="order-time">
                                         <Clock size={16} />
-                                        <span>{formatDate(order.timestamp)}</span>
+                                        <span>{formatDate(order.createdAt)}</span>
                                     </div>
                                 </div>
 
@@ -157,8 +166,8 @@ function Orders() {
                                 </div>
 
                                 <div className="order-footer">
-                                    <span className="items-count">{order.cart?.length || 0} items</span>
-                                    <span className="order-total">{formatCurrency(orderTotal)}</span>
+                                    <span className="items-count">{order.items?.length || 0} items</span>
+                                    <span className="order-total">{formatCurrency(order.total)}</span>
                                 </div>
                             </div>
                         );

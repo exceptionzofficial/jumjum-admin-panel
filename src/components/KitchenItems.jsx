@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, X, Check, Search, ChefHat } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Check, Search, ChefHat, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useData } from '../context/DataContext';
 import './KitchenItems.css';
@@ -10,11 +10,12 @@ const kitchenCategories = [
 ];
 
 function KitchenItems() {
-    const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem } = useData();
+    const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem, loadMenuItems, loading } = useData();
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
+    const [saving, setSaving] = useState(false);
 
     // Filter only kitchen items
     const kitchenItems = menuItems.filter(item => item.isKitchen);
@@ -58,7 +59,7 @@ function KitchenItems() {
     const openEditModal = (item) => {
         setEditingItem(item);
         setFormData({
-            itemId: item.itemId || `KIT-${item.id}`,
+            itemId: item.itemId,
             name: item.name,
             price: item.price.toString(),
             category: item.category,
@@ -77,36 +78,56 @@ function KitchenItems() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const itemData = {
-            itemId: formData.itemId,
-            name: formData.name,
-            price: parseFloat(formData.price),
-            category: formData.category,
-            stock: parseInt(formData.stock),
-            lowStockThreshold: parseInt(formData.lowStockThreshold),
-            isKitchen: true,
-        };
+        setSaving(true);
 
-        if (editingItem) {
-            updateMenuItem(editingItem.id, itemData);
-            toast.success('Kitchen item updated successfully');
-        } else {
-            addMenuItem(itemData);
-            toast.success('Kitchen item added successfully');
+        try {
+            const itemData = {
+                itemId: formData.itemId,
+                name: formData.name,
+                price: parseFloat(formData.price),
+                category: formData.category,
+                stock: parseInt(formData.stock),
+                lowStockThreshold: parseInt(formData.lowStockThreshold),
+                isKitchen: true,
+            };
+
+            if (editingItem) {
+                await updateMenuItem(editingItem.itemId, itemData);
+                toast.success('Kitchen item updated successfully');
+            } else {
+                await addMenuItem(itemData);
+                toast.success('Kitchen item added successfully');
+            }
+            setShowModal(false);
+        } catch (error) {
+            toast.error(error.message || 'Failed to save item');
+        } finally {
+            setSaving(false);
         }
-        setShowModal(false);
     };
 
-    const handleDelete = (item) => {
+    const handleDelete = async (item) => {
         if (confirm(`Delete "${item.name}"?`)) {
-            deleteMenuItem(item.id);
-            toast.success('Kitchen item deleted');
+            try {
+                await deleteMenuItem(item.itemId);
+                toast.success('Kitchen item deleted');
+            } catch (error) {
+                toast.error(error.message || 'Failed to delete item');
+            }
         }
     };
 
     const formatCurrency = (amount) => `₹${amount.toLocaleString('en-IN')}`;
+
+    if (loading) {
+        return (
+            <div className="kitchen-items loading">
+                <div className="loading-spinner">Loading kitchen items...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="kitchen-items">
@@ -118,10 +139,16 @@ function KitchenItems() {
                         <p>Manage food and snacks prepared in kitchen</p>
                     </div>
                 </div>
-                <button className="btn btn-primary btn-lg" onClick={openAddModal}>
-                    <Plus size={20} />
-                    Add Kitchen Item
-                </button>
+                <div className="header-actions">
+                    <button className="btn btn-secondary" onClick={loadMenuItems}>
+                        <RefreshCw size={18} />
+                        Refresh
+                    </button>
+                    <button className="btn btn-primary btn-lg" onClick={openAddModal}>
+                        <Plus size={20} />
+                        Add Kitchen Item
+                    </button>
+                </div>
             </div>
 
             {/* Stats */}
@@ -179,9 +206,9 @@ function KitchenItems() {
                     </thead>
                     <tbody>
                         {filteredItems.map(item => (
-                            <tr key={item.id}>
+                            <tr key={item.itemId}>
                                 <td>
-                                    <code className="item-id kitchen">{item.itemId || `KIT-${item.id}`}</code>
+                                    <code className="item-id kitchen">{item.itemId}</code>
                                 </td>
                                 <td><strong>{item.name}</strong></td>
                                 <td>
@@ -238,6 +265,7 @@ function KitchenItems() {
                                     onChange={(e) => setFormData({ ...formData, itemId: e.target.value })}
                                     placeholder="KIT-FOO-1234"
                                     required
+                                    disabled={editingItem}
                                 />
                                 <small className="form-hint">Unique identifier for this kitchen item</small>
                             </div>
@@ -303,9 +331,9 @@ function KitchenItems() {
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn btn-success">
+                                <button type="submit" className="btn btn-success" disabled={saving}>
                                     <Check size={18} />
-                                    {editingItem ? 'Update Item' : 'Add Item'}
+                                    {saving ? 'Saving...' : editingItem ? 'Update Item' : 'Add Item'}
                                 </button>
                             </div>
                         </form>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, X, Check, Search, Beer } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Check, Search, Beer, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useData } from '../context/DataContext';
 import './BarItems.css';
@@ -11,11 +11,12 @@ const barCategories = [
 ];
 
 function BarItems() {
-    const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem } = useData();
+    const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem, loadMenuItems, loading } = useData();
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
+    const [saving, setSaving] = useState(false);
 
     // Filter only bar items
     const barItems = menuItems.filter(item => !item.isKitchen);
@@ -59,7 +60,7 @@ function BarItems() {
     const openEditModal = (item) => {
         setEditingItem(item);
         setFormData({
-            itemId: item.itemId || `BAR-${item.id}`,
+            itemId: item.itemId,
             name: item.name,
             price: item.price.toString(),
             category: item.category,
@@ -78,36 +79,56 @@ function BarItems() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const itemData = {
-            itemId: formData.itemId,
-            name: formData.name,
-            price: parseFloat(formData.price),
-            category: formData.category,
-            stock: parseInt(formData.stock),
-            lowStockThreshold: parseInt(formData.lowStockThreshold),
-            isKitchen: false,
-        };
+        setSaving(true);
 
-        if (editingItem) {
-            updateMenuItem(editingItem.id, itemData);
-            toast.success('Bar item updated successfully');
-        } else {
-            addMenuItem(itemData);
-            toast.success('Bar item added successfully');
+        try {
+            const itemData = {
+                itemId: formData.itemId,
+                name: formData.name,
+                price: parseFloat(formData.price),
+                category: formData.category,
+                stock: parseInt(formData.stock),
+                lowStockThreshold: parseInt(formData.lowStockThreshold),
+                isKitchen: false,
+            };
+
+            if (editingItem) {
+                await updateMenuItem(editingItem.itemId, itemData);
+                toast.success('Bar item updated successfully');
+            } else {
+                await addMenuItem(itemData);
+                toast.success('Bar item added successfully');
+            }
+            setShowModal(false);
+        } catch (error) {
+            toast.error(error.message || 'Failed to save item');
+        } finally {
+            setSaving(false);
         }
-        setShowModal(false);
     };
 
-    const handleDelete = (item) => {
+    const handleDelete = async (item) => {
         if (confirm(`Delete "${item.name}"?`)) {
-            deleteMenuItem(item.id);
-            toast.success('Bar item deleted');
+            try {
+                await deleteMenuItem(item.itemId);
+                toast.success('Bar item deleted');
+            } catch (error) {
+                toast.error(error.message || 'Failed to delete item');
+            }
         }
     };
 
     const formatCurrency = (amount) => `₹${amount.toLocaleString('en-IN')}`;
+
+    if (loading) {
+        return (
+            <div className="bar-items loading">
+                <div className="loading-spinner">Loading bar items...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="bar-items">
@@ -119,10 +140,16 @@ function BarItems() {
                         <p>Manage drinks, beer, and cocktails</p>
                     </div>
                 </div>
-                <button className="btn btn-primary btn-lg" onClick={openAddModal}>
-                    <Plus size={20} />
-                    Add Bar Item
-                </button>
+                <div className="header-actions">
+                    <button className="btn btn-secondary" onClick={loadMenuItems}>
+                        <RefreshCw size={18} />
+                        Refresh
+                    </button>
+                    <button className="btn btn-primary btn-lg" onClick={openAddModal}>
+                        <Plus size={20} />
+                        Add Bar Item
+                    </button>
+                </div>
             </div>
 
             {/* Stats */}
@@ -180,9 +207,9 @@ function BarItems() {
                     </thead>
                     <tbody>
                         {filteredItems.map(item => (
-                            <tr key={item.id}>
+                            <tr key={item.itemId}>
                                 <td>
-                                    <code className="item-id">{item.itemId || `BAR-${item.id}`}</code>
+                                    <code className="item-id">{item.itemId}</code>
                                 </td>
                                 <td><strong>{item.name}</strong></td>
                                 <td>
@@ -239,6 +266,7 @@ function BarItems() {
                                     onChange={(e) => setFormData({ ...formData, itemId: e.target.value })}
                                     placeholder="BAR-DRI-1234"
                                     required
+                                    disabled={editingItem}
                                 />
                                 <small className="form-hint">Unique identifier for this item</small>
                             </div>
@@ -304,9 +332,9 @@ function BarItems() {
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn btn-primary">
+                                <button type="submit" className="btn btn-primary" disabled={saving}>
                                     <Check size={18} />
-                                    {editingItem ? 'Update Item' : 'Add Item'}
+                                    {saving ? 'Saving...' : editingItem ? 'Update Item' : 'Add Item'}
                                 </button>
                             </div>
                         </form>
