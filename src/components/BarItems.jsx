@@ -5,9 +5,16 @@ import { useData } from '../context/DataContext';
 import './BarItems.css';
 
 const barCategories = [
-    { id: 'drinks', name: 'Drinks', icon: '🥤' },
+    { id: 'scotch', name: 'Scotch Whisky', icon: '🥃' },
+    { id: 'whisky', name: 'Whisky', icon: '🥃' },
+    { id: 'brandy', name: 'Brandy', icon: '🍷' },
+    { id: 'vodka', name: 'Vodka', icon: '🍸' },
+    { id: 'rum', name: 'Rum', icon: '🍹' },
+    { id: 'gin', name: 'Gin', icon: '🍸' },
+    { id: 'wine', name: 'Wine', icon: '🍷' },
     { id: 'beer', name: 'Beer', icon: '🍺' },
-    { id: 'cocktails', name: 'Cocktails', icon: '🍸' },
+    { id: 'drinks', name: 'Other Drinks', icon: '🥤' },
+    { id: 'cocktails', name: 'Cocktails', icon: '🍹' },
 ];
 
 function BarItems() {
@@ -220,7 +227,7 @@ function BarItems() {
                                 <td>{formatCurrency(item.price)}</td>
                                 <td>
                                     <span className={`badge ${item.stock === 0 ? 'badge-danger' :
-                                            item.stock <= item.lowStockThreshold ? 'badge-warning' : 'badge-success'
+                                        item.stock <= item.lowStockThreshold ? 'badge-warning' : 'badge-success'
                                         }`}>
                                         {item.stock} units
                                     </span>
