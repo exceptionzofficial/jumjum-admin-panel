@@ -1,6 +1,6 @@
 // API Service for JumJum Admin Panel
-// const API_BASE_URL = 'https://jumjum-backend.vercel.app/api';
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://jumjum-backend.vercel.app/api';
+// const API_BASE_URL = 'http://localhost:5000/api';
 
 
 // Menu Items API
