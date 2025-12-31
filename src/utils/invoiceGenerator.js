@@ -156,7 +156,7 @@ export const generatePrintableHTML = (items, totals, dateRange, category, busine
 </head>
 <body>
     <div class="header">
-        <h1>🍺 SRI KALKI JAM JAM RESORTS - BILLING REPORT</h1>
+        <h1>SRI KALKI JAM JAM RESORTS - BILLING REPORT</h1>
         <p>${businessInfo?.name || 'SRI KALKI JAM JAM RESORTS'}</p>
         <p>GSTIN: ${businessInfo?.gstin || 'XXXXXXXXXXXXXXXXX'}</p>
     </div>

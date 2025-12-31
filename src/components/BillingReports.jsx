@@ -145,7 +145,7 @@ function BillingReports() {
                 </style>
             </head>
             <body>
-                <h1>🍺 SRI KALKI JAM JAM RESORTS - CUSTOMER BILLS REPORT</h1>
+                <h1>SRI KALKI JAM JAM RESORTS - CUSTOMER BILLS REPORT</h1>
                 <p class="subtitle">${getDateRangeString()} | ${bills.length} Bills | Total: ${formatCurrency(totals.grandTotal)}</p>
                 
                 <table>
