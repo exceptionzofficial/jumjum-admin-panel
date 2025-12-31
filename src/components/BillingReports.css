@@ -1,0 +1,352 @@
+/* Billing Reports - Professional Styling */
+.billing-reports {
+    padding: 24px;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-title svg {
+    color: var(--primary);
+}
+
+.header-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.header-title p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 4px 0 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+
+.summary-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.summary-card.total .card-icon {
+    background: rgba(230, 81, 0, 0.12);
+    color: var(--primary);
+}
+
+.summary-card.bills .card-icon {
+    background: rgba(33, 150, 243, 0.12);
+    color: #2196F3;
+}
+
+.summary-card.kitchen .card-icon {
+    background: rgba(76, 175, 80, 0.12);
+    color: #4CAF50;
+}
+
+.summary-card.bar .card-icon {
+    background: rgba(255, 152, 0, 0.12);
+    color: #FF9800;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.card-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Filters Section */
+.filters-section {
+    display: flex;
+    gap: 24px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.date-filters,
+.category-filters {
+    display: flex;
+    gap: 6px;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.custom-dates {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.custom-dates input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.custom-dates span {
+    color: var(--text-muted);
+}
+
+.filter-group.actions {
+    margin-left: auto;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Report Info Bar */
+.report-info {
+    display: flex;
+    gap: 20px;
+    padding: 12px 16px;
+    background: var(--bg-hover);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Report Table */
+.report-table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--bg-hover);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.report-table td {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.report-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+.report-table .text-right {
+    text-align: right;
+}
+
+.report-table .item-id {
+    font-family: monospace;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.report-table .item-name {
+    font-weight: 500;
+}
+
+.report-table .amount {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.category-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.category-badge.bar {
+    background: rgba(255, 152, 0, 0.12);
+    color: #FF9800;
+}
+
+.category-badge.kitchen {
+    background: rgba(76, 175, 80, 0.12);
+    color: #4CAF50;
+}
+
+/* Footer Rows */
+.report-table tfoot tr {
+    background: var(--bg-hover);
+}
+
+.report-table tfoot td {
+    padding: 12px 16px;
+    font-weight: 600;
+}
+
+.subtotal-row td {
+    border-top: 2px solid var(--border-color);
+}
+
+.grand-total-row {
+    background: var(--primary) !important;
+}
+
+.grand-total-row td {
+    color: white !important;
+    font-size: 1rem;
+}
+
+/* Loading & Empty State */
+.loading,
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+.empty-state svg {
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .filters-section {
+        flex-direction: column;
+    }
+
+    .filter-group.actions {
+        margin-left: 0;
+    }
+
+    .date-filters,
+    .category-filters {
+        flex-wrap: wrap;
+    }
+}

@@ -100,6 +100,48 @@ export const billingApi = {
         return data.data;
     },
 
+    // Get bills by date range
+    getByDateRange: async (startDate, endDate) => {
+        const response = await fetch(`${API_BASE_URL}/billing?limit=1000`);
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error);
+
+        // Filter by date range on client side
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        return data.data.filter(bill => {
+            const billDate = new Date(bill.createdAt);
+            return billDate >= start && billDate <= end;
+        });
+    },
+
+    // Get weekly bills (last 7 days)
+    getWeekly: async () => {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        return billingApi.getByDateRange(startDate, endDate);
+    },
+
+    // Get monthly bills (current month)
+    getMonthly: async () => {
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return billingApi.getByDateRange(startDate, endDate);
+    },
+
+    // Get yearly bills (current year)
+    getYearly: async () => {
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), 0, 1);
+        const endDate = new Date(now.getFullYear(), 11, 31);
+        return billingApi.getByDateRange(startDate, endDate);
+    },
+
     // Get stats
     getStats: async () => {
         const response = await fetch(`${API_BASE_URL}/billing/stats`);

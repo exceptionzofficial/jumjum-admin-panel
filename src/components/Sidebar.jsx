@@ -5,6 +5,7 @@ import {
     Package,
     Receipt,
     Bell,
+    FileText,
     Sun,
     Moon
 } from 'lucide-react';
@@ -25,6 +26,7 @@ function Sidebar({ activePage, onPageChange }) {
         { id: 'kitchen', label: 'Kitchen Items', icon: ChefHat },
         { id: 'inventory', label: 'Inventory', icon: Package },
         { id: 'orders', label: 'Orders', icon: Receipt },
+        { id: 'reports', label: 'Billing Reports', icon: FileText },
         { id: 'notifications', label: 'Notifications', icon: Bell, badge: alertCount },
     ];
 

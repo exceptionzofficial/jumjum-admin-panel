@@ -8,6 +8,7 @@ import BarItems from './components/BarItems';
 import KitchenItems from './components/KitchenItems';
 import Inventory from './components/Inventory';
 import Orders from './components/Orders';
+import BillingReports from './components/BillingReports';
 import Notifications from './components/Notifications';
 import './App.css';
 
@@ -26,6 +27,8 @@ function AdminApp() {
         return <Inventory />;
       case 'orders':
         return <Orders />;
+      case 'reports':
+        return <BillingReports />;
       case 'notifications':
         return <Notifications />;
       default:
