@@ -108,7 +108,7 @@ function BillingReports() {
     // Handle CSV download
     const handleDownloadCSV = () => {
         const csv = generateCSV(aggregatedItems, totals, getDateRangeString(), categoryFilter);
-        const filename = `jumjum-report-${dateFilter}-${categoryFilter}-${Date.now()}.csv`;
+        const filename = `sri-kalki-report-${dateFilter}-${categoryFilter}-${Date.now()}.csv`;
         downloadCSV(csv, filename);
     };
 
@@ -145,7 +145,7 @@ function BillingReports() {
                 </style>
             </head>
             <body>
-                <h1>🍺 JUMJUM - CUSTOMER BILLS REPORT</h1>
+                <h1>🍺 SRI KALKI JAM JAM RESORTS - CUSTOMER BILLS REPORT</h1>
                 <p class="subtitle">${getDateRangeString()} | ${bills.length} Bills | Total: ${formatCurrency(totals.grandTotal)}</p>
                 
                 <table>

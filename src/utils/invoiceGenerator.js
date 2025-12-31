@@ -78,7 +78,7 @@ export const calculateTotals = (items) => {
 export const generateCSV = (items, totals, dateRange, category) => {
     const headers = ['S.No', 'Item ID', 'Item Name', 'Pack Size', 'Category', 'Quantity', 'Rate (₹)', 'Amount (₹)'];
 
-    let csv = `JUMJUM BILLING REPORT\n`;
+    let csv = `SRI KALKI JAM JAM RESORTS - BILLING REPORT\n`;
     csv += `Date Range: ${dateRange}\n`;
     csv += `Category: ${category}\n`;
     csv += `Generated: ${formatDate(new Date())}\n\n`;
@@ -133,7 +133,7 @@ export const generatePrintableHTML = (items, totals, dateRange, category, busine
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JumJum Billing Report</title>
+    <title>SRI KALKI JAM JAM RESORTS - Billing Report</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; font-size: 12px; padding: 20px; }
@@ -156,8 +156,8 @@ export const generatePrintableHTML = (items, totals, dateRange, category, busine
 </head>
 <body>
     <div class="header">
-        <h1>🍺 JUMJUM - BILLING REPORT</h1>
-        <p>${businessInfo?.name || 'JumJum Restaurant & Bar'}</p>
+        <h1>🍺 SRI KALKI JAM JAM RESORTS - BILLING REPORT</h1>
+        <p>${businessInfo?.name || 'SRI KALKI JAM JAM RESORTS'}</p>
         <p>GSTIN: ${businessInfo?.gstin || 'XXXXXXXXXXXXXXXXX'}</p>
     </div>
 
