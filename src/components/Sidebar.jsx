@@ -25,6 +25,7 @@ function Sidebar({ activePage, onPageChange }) {
         { id: 'bar', label: 'Bar Items', icon: Beer },
         { id: 'kitchen', label: 'Kitchen Items', icon: ChefHat },
         { id: 'inventory', label: 'Inventory', icon: Package },
+        { id: 'kitchenstock', label: 'Kitchen Stock', icon: Package },
         { id: 'orders', label: 'Orders', icon: Receipt },
         { id: 'reports', label: 'Billing Reports', icon: FileText },
         { id: 'notifications', label: 'Notifications', icon: Bell, badge: alertCount },
@@ -33,9 +34,9 @@ function Sidebar({ activePage, onPageChange }) {
     return (
         <aside className="sidebar">
             <div className="sidebar-brand">
-                <div className="sidebar-logo">🍺</div>
+                <div className="sidebar-logo">🏨</div>
                 <div className="sidebar-title">
-                    <h1>JumJum</h1>
+                    <h1>SRI KALKI</h1>
                     <span>Admin Panel</span>
                 </div>
             </div>

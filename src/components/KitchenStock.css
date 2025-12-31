@@ -1,0 +1,242 @@
+/* Kitchen Stock - Admin Panel */
+.kitchen-stock {
+    padding: 24px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-title svg {
+    color: var(--primary);
+}
+
+.header-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-title p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Alert Cards */
+.alert-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.alert-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.alert-card.low {
+    background: rgba(255, 167, 38, 0.1);
+    color: #FFA726;
+}
+
+.alert-card.out {
+    background: rgba(239, 83, 80, 0.1);
+    color: #EF5350;
+}
+
+.alert-card.total {
+    background: var(--bg-card);
+    color: var(--primary);
+    border-color: var(--border-color);
+}
+
+.alert-card.active {
+    border-color: currentColor;
+    box-shadow: var(--shadow-md);
+}
+
+.alert-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.alert-count {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.alert-label {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Search */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.search-bar svg {
+    color: var(--text-muted);
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--text-primary);
+    outline: none;
+}
+
+/* Table */
+.stock-table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stock-table th {
+    padding: 16px;
+    text-align: left;
+    background: var(--bg-hover);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stock-table td {
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.stock-table .item-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stock-table .qty {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.stock-table .unit {
+    color: var(--text-muted);
+    margin-left: 4px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-badge.available {
+    background: rgba(76, 175, 80, 0.12);
+    color: #4CAF50;
+}
+
+.status-badge.low {
+    background: rgba(255, 167, 38, 0.12);
+    color: #FFA726;
+}
+
+.status-badge.out {
+    background: rgba(239, 83, 80, 0.12);
+    color: #EF5350;
+}
+
+.status-row-low {
+    background: rgba(255, 167, 38, 0.04);
+}
+
+.status-row-out {
+    background: rgba(239, 83, 80, 0.04);
+}
+
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+}
+
+/* Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Empty & Loading */
+.loading,
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+.empty-state svg {
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}

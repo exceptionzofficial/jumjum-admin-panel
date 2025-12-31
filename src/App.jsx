@@ -9,6 +9,7 @@ import KitchenItems from './components/KitchenItems';
 import Inventory from './components/Inventory';
 import Orders from './components/Orders';
 import BillingReports from './components/BillingReports';
+import KitchenStock from './components/KitchenStock';
 import Notifications from './components/Notifications';
 import './App.css';
 
@@ -29,6 +30,8 @@ function AdminApp() {
         return <Orders />;
       case 'reports':
         return <BillingReports />;
+      case 'kitchenstock':
+        return <KitchenStock />;
       case 'notifications':
         return <Notifications />;
       default:
